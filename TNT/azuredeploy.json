@@ -2,34 +2,6 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
   "parameters": {
-    "peeringLocation": {
-      "type": "string",
-      "metadata": {
-        "description": "This is the name of the peering location and not the ARM resource location. It must exactly match one of the available peering locations from List ExpressRoute Service Providers API call."
-      }
-    },
-    "eRsku_Tier": {
-      "type": "string",
-      "defaultValue": "Standard",
-      "allowedValues": [
-        "Standard",
-        "Premium"
-      ],
-      "metadata": {
-        "description": "Chosen SKU Tier of ExpressRoute circuit. Choose from Premium or Standard SKU tiers."
-      }
-    },
-    "eRsku_family": {
-      "type": "string",
-      "defaultValue": "MeteredData",
-      "allowedValues": [
-        "MeteredData",
-        "UnlimitedData"
-      ],
-      "metadata": {
-        "description": "Chosen SKU family of ExpressRoute circuit. Choose from MeteredData or UnlimitedData SKU families."
-      }
-    },
     "virtualNetworkName": {
       "type": "string",
       "metadata": {
@@ -42,7 +14,7 @@
         "description": "The address space in CIDR notation for the new virtual network."
       }
     },
-    "subnetPrefix": {
+    "serverSubnetPrefix": {
       "type": "string",
       "metadata": {
         "description": "The address range in CIDR notation for the first subnet."
@@ -63,14 +35,17 @@
         "UltraPerformance"
       ],
       "metadata": {
-        "description": "The Sku of the Gateway. This must be one of Basic, Standard or HighPerformance."
+        "description": "The Sku of the Gateway. This must be one of Standard, HighPerformance or UltraPerformance according to the bandwidth."
       }
     }
   },
   "variables": {
     "apiVersion": "2017-03-01",
-    "serviceProviderName": "",
-    "bandwidthInMbps": "",
+    "serviceProviderName": "Equinix",
+    "peeringLocation": "Amsterdam",
+    "bandwidthInMbps": "1000",
+    "eRsku_Tier": "Standard",
+    "eRsku_family": "UnlimitedData",
     "gatewayType": "ExpressRoute",
     "connectionType": "ExpressRoute",
     "subnetName": "Servers",
@@ -100,7 +75,7 @@
           {
             "name": "[variables('subnetName')]",
             "properties": {
-              "addressPrefix": "[parameters('subnetPrefix')]"
+              "addressPrefix": "[parameters('serverSubnetPrefix')]"
             }
           },
           {
@@ -118,14 +93,14 @@
       "name": "[variables('circuitName')]",
       "location": "[resourceGroup().location]",
       "sku": {
-        "name": "[concat(parameters('eRsku_Tier'),'_', parameters('eRsku_family'))]",
-        "tier": "[parameters('eRsku_Tier')]",
-        "family": "[parameters('eRsku_family')]"
+        "name": "[concat(variables('eRsku_Tier'),'_', variables('eRsku_family'))]",
+        "tier": "[variables('eRsku_Tier')]",
+        "family": "[variables('eRsku_family')]"
       },
       "properties": {
         "serviceProviderProperties": {
           "serviceProviderName": "[variables('serviceProviderName')]",
-          "peeringLocation": "[parameters('peeringLocation')]",
+          "peeringLocation": "[variables('peeringLocation')]",
           "bandwidthInMbps": "[variables('bandwidthInMbps')]"
         }
       }
@@ -192,4 +167,3 @@
     }
   ]
 }
-

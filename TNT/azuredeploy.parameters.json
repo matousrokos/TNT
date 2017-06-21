@@ -5,17 +5,14 @@
     "virtualNetworkName": {
       "value": "TNT"
     },
-    "subnetPrefix": {
-      "value": "10.0.0.0/24"
+    "vNETaddressPrefix": {
+      "value": "10.160.16.0/23"
+    },
+    "serverSubnetPrefix": {
+      "value": "10.160.17.0/24"
     },
     "gatewaySubnetPrefix": {
-      "value": "10.0.1.0/24"
-    },
-    "peeringLocation": {
-      "value": "Amsterdam"
-    },
-    "vNETaddressPrefix": {
-      "value": "10.0.0.0/23"
+      "value": "10.160.16.0/28"
     }
   }
 }
